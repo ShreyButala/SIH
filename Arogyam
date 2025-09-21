@@ -1,673 +1,939 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arogyam: The Healthcare Chatbot</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        /* General body and container styling */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8;
-            color: #334155;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arogyam Mitra: The Healthcare Chatbot</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f0f4f8;
+      color: #334155;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .page-section {
+      display: none;
+    }
+    .page-section.active {
+      display: block;
+    }
 
-        /* Page section visibility control */
-        .page-section {
-            display: none;
-        }
-        .page-section.active {
-            display: block;
-        }
+    .nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+      padding: 1rem 0.5rem;
+      border-bottom-left-radius: 0.75rem;
+      border-bottom-right-radius: 0.75rem;
+    }
+    .nav-bar button {
+      margin: 0 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      font-weight: 600;
+      color: #4b5563;
+      border-radius: 9999px;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      transform: scale(1);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+    }
+    .nav-bar button:hover {
+      transform: scale(1.05);
+    }
+    .nav-bar button.active {
+      background-color: #059669;
+      color: white;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
 
-        /* Navigation bar styling */
-        .nav-bar {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background-color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: center;
-            padding: 1rem 0.5rem;
-            border-bottom-left-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-        }
-        .nav-bar button {
-            margin: 0 0.5rem;
-            padding: 0.5rem 1rem;
-            font-size: 0.875rem;
-            line-height: 1.25rem;
-            font-weight: 600;
-            color: #4b5563;
-            border-radius: 9999px;
-            transition-property: all;
-            transition-duration: 300ms;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transform: scale(1);
-        }
-        .nav-bar button:hover {
-            transform: scale(1.05);
-        }
-        .nav-bar button.active {
-            background-color: #059669;
-            color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    /* Chat styles */
+    .whatsapp-chat-mockup {
+      background-color: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      min-height: 600px;
+      width: 100%;
+      max-width: 28rem;
+      overflow: hidden;
+    }
+    .chat-header {
+      background-color: #059669;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      border-top-left-radius: 1.5rem;
+      border-top-right-radius: 1.5rem;
+    }
+    .chat-log {
+      flex-grow: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="%23e2e8f0" opacity="0.1"><rect width="100%" height="100%" /></svg>');
+      background-repeat: repeat;
+    }
+    .message-bubble {
+      max-width: 75%;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      word-wrap: break-word;
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      transform: scale(1);
+    }
+    .user-message {
+      background-color: #bbf7d0;
+      margin-left: auto;
+      border-top-right-radius: 0.25rem;
+    }
+    .bot-message {
+      background-color: #e2e8f0;
+      margin-right: auto;
+      border-top-left-radius: 0.25rem;
+    }
+    .question-button {
+      background-color: #d1fae5;
+      color: #065f46;
+      padding: 0.75rem 1.25rem;
+      border-radius: 9999px;
+      text-align: left;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 0.5rem;
+    }
+    .voice-btn {
+      background: #d1fae5;
+      color: #065f46;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
 
-        /* Chatbot-specific styling */
-        .whatsapp-chat-mockup {
-            background-color: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            display: flex;
-            flex-direction: column;
-            min-height: 600px;
-            width: 100%;
-            max-width: 28rem;
-            overflow: hidden;
-        }
-        .chat-header {
-            background-color: #059669;
-            color: white;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            border-top-left-radius: 1.5rem;
-            border-top-right-radius: 1.5rem;
-        }
-        .chat-log {
-            flex-grow: 1;
-            padding: 1.5rem;
-            overflow-y: auto;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="%23e2e8f0" opacity="0.1"><rect width="100%" height="100%" /></svg>');
-            background-repeat: repeat;
-        }
-        .message-bubble {
-            max-width: 75%;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            margin-bottom: 0.75rem;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            word-wrap: break-word;
-            transition-property: all;
-            transition-duration: 300ms;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transform: scale(1);
-        }
-        .user-message {
-            background-color: #bbf7d0;
-            margin-left: auto;
-            border-top-right-radius: 0.25rem;
-        }
-        .bot-message {
-            background-color: #e2e8f0;
-            margin-right: auto;
-            border-top-left-radius: 0.25rem;
-        }
-        .question-button {
-            background-color: #d1fae5;
-            color: #065f46;
-            padding: 0.75rem 1.25rem;
-            border-radius: 9999px;
-            text-align: left;
-            font-weight: 500;
-            cursor: pointer;
-            transition-property: all;
-            transition-duration: 300ms;
-        }
-        .voice-btn {
-            background: #d1fae5;
-            color: #065f46;
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition-property: all;
-        }
+    /* Center chat box horizontally */
+    #chat.active {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
 
-        /* Dashboard styles */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        .dashboard-card {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .chart-container {
-            height: 16rem;
-        }
-        
-        /* Form styles */
-        .form-panel {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            max-width: 32rem;
-            margin: 0 auto;
-        }
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.75rem;
-        }
-
-        /* Modal styling */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-        }
-        .modal-content {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 1.5rem;
-            max-width: 28rem;
-            width: 90%;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            position: relative;
-        }
-    </style>
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index:100;
+    }
+    .modal-overlay.hidden {
+      display: none;
+    }
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      max-width: 28rem;
+      width: 90%;
+      position: relative;
+      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+    .news-card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      margin-bottom: 1.5rem;
+    }
+    .news-item {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .news-item:last-child {
+      border-bottom: none;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-tile {
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      overflow: hidden;
+      transition: transform 0.3s ease-in-out;
+    }
+    .news-tile:hover {
+      transform: translateY(-5px);
+    }
+    .news-tile img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .news-tile-content {
+      padding: 1rem;
+    }
+    .news-tile h4 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #1f2937;
+    }
+    .news-tile p {
+      font-size: 0.875rem;
+      color: #4b5563;
+      margin-bottom: 1rem;
+    }
+    .news-tile a {
+      color: #059669;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .video-tile {
+      position: relative;
+    }
+    .video-tile::after {
+      content: '\f16a';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      color: white;
+      text-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .about-card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease-in-out;
+    }
+    .about-card:hover {
+      transform: translateY(-5px);
+    }
+    .about-card .icon {
+      font-size: 3rem;
+      color: #059669;
+      margin-bottom: 1rem;
+    }
+    .emergency-table-container {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      overflow-x: auto;
+    }
+    .emergency-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .emergency-table th, .emergency-table td {
+      padding: 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .emergency-table th {
+      background-color: #f1f5f9;
+      font-weight: 600;
+      color: #4b5563;
+    }
+    .emergency-table a {
+      color: #059669;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .emergency-table a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body class="bg-slate-50">
 
-    <!-- Navigation Bar -->
-    <nav class="nav-bar">
-        <button onclick="showPage('home')" class="active" id="nav-home">Home</button>
-        <button onclick="showPage('chat')" id="nav-chat">Chat</button>
-        <button onclick="showPage('dashboard')" id="nav-dashboard">Dashboard</button>
-        <button onclick="showPage('form')" id="nav-form">Form</button>
-    </nav>
+  <nav class="nav-bar">
+    <button onclick="showPage('home')" id="nav-home" class="active">Home</button>
+    <button onclick="showPage('chat')" id="nav-chat">Chat</button>
+    <button onclick="showPage('dashboard')" id="nav-dashboard">Dashboard</button>
+    <button onclick="showPage('emergency')" id="nav-emergency">Emergency</button>
+    <button onclick="showPage('form')" id="nav-form">Form</button>
+  </nav>
 
-    <!-- Home Page Section -->
-    <div id="home" class="page-section active container">
-        <header class="bg-gradient-to-br from-emerald-500 to-emerald-700 text-white rounded-3xl py-24 md:py-32 text-center shadow-xl">
-            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4 drop-shadow-md">
-                Healthcare <span class="text-emerald-200">Simplified</span> with Arogyam
-            </h1>
-            <p class="text-lg md:text-xl text-emerald-100 max-w-3xl mx-auto mb-8 font-light">
-                Instant, reliable health information on a platform everyone uses: WhatsApp.
-            </p>
-            <div class="flex flex-wrap justify-center gap-4">
-                <a href="https://wa.me/919999999999?text=Hello%20Arogyam!%20I%20would%20like%20to%20know%20more%20about%20your%20services." target="_blank" class="bg-white text-emerald-600 px-8 py-4 rounded-full font-bold shadow-lg hover:bg-emerald-50 transition-all duration-300">
-                    <i class="fab fa-whatsapp mr-2"></i> Connect via WhatsApp
-                </a>
-                <button onclick="showModal('sms')" class="bg-slate-800 text-white px-8 py-4 rounded-full font-bold shadow-lg hover:bg-slate-700 transition-all duration-300">
-                    <i class="fas fa-sms mr-2"></i> Connect via SMS
-                </button>
-                <button onclick="showPage('chat')" class="bg-emerald-100 text-emerald-800 px-8 py-4 rounded-full font-bold shadow-lg hover:bg-emerald-200 transition-all duration-300">
-                    <i class="fas fa-comments mr-2"></i> Start Web Chat
-                </button>
-            </div>
-        </header>
+  <div id="home" class="page-section active container">
+    <header class="bg-gradient-to-br from-emerald-500 to-emerald-700 text-white rounded-3xl py-24 md:py-32 text-center shadow-xl">
+      <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4 drop-shadow-md">
+        Healthcare <span class="text-emerald-200">Simplified</span> with Arogyam Mitra
+      </h1>
+      <p class="text-lg md:text-xl text-emerald-100 max-w-3xl mx-auto mb-8 font-light">
+        Instant, reliable health information on a platform everyone uses: WhatsApp.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="https://wa.me/919999999999?text=Hello%20Arogyam!%20I%20would%20like%20to%20know%20more%20about%20your%20services." target="_blank" class="bg-white text-emerald-600 px-8 py-4 rounded-full font-bold shadow-lg hover:bg-emerald-50 transition-all duration-300">
+          <i class="fab fa-whatsapp mr-2"></i> Connect via WhatsApp
+        </a>
+        <button onclick="showModal('sms')" class="bg-slate-800 text-white px-8 py-4 rounded-full font-bold shadow-lg hover:bg-slate-700 transition-all duration-300">
+          <i class="fas fa-sms mr-2"></i> Connect via SMS
+        </button>
+        <button onclick="showPage('chat')" class="bg-emerald-100 text-emerald-800 px-8 py-4 rounded-full font-bold shadow-lg hover:bg-emerald-200 transition-all duration-300">
+          <i class="fas fa-comments mr-2"></i> Start Web Chat
+        </button>
+      </div>
+    </header>
 
-        <!-- Problem & Solution Section -->
-        <section class="py-20 bg-slate-50">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div class="bg-white rounded-3xl p-8 shadow-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl">
-                    <h2 class="text-3xl font-bold text-red-600 mb-4">The Challenge</h2>
-                    <p class="text-slate-600 leading-relaxed">
-                        Access to accurate health information is a significant challenge for rural and semi-urban populations. Misinformation and a lack of real-time communication channels lead to delayed care and a general lack of awareness about critical preventive healthcare measures and government advisories.
-                    </p>
-                    <ul class="list-disc list-inside mt-4 space-y-2 text-slate-600">
-                        <li><i class="fas fa-exclamation-triangle mr-2 text-red-500"></i> Widespread misinformation</li>
-                        <li><i class="fas fa-phone-slash mr-2 text-red-500"></i> Limited access to health workers</li>
-                        <li><i class="fas fa-clock mr-2 text-red-500"></i> Delays in disease symptom diagnosis</li>
-                    </ul>
-                </div>
-                <div class="bg-white rounded-3xl p-8 shadow-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl">
-                    <h2 class="text-3xl font-bold text-emerald-600 mb-4">Our Solution</h2>
-                    <p class="text-slate-600 leading-relaxed">
-                        We are building **Arogyam**, a multilingual AI chatbot that educates and informs rural populations on preventive healthcare, disease symptoms, and vaccination schedules. It provides real-time alerts for outbreaks by integrating with government health databases.
-                    </p>
-                    <ul class="list-disc list-inside mt-4 space-y-2 text-slate-600">
-                        <li><i class="fas fa-percent mr-2 text-emerald-500"></i> 80% accuracy in health queries</li>
-                        <li><i class="fas fa-arrow-up mr-2 text-emerald-500"></i> 20% increase in health awareness</li>
-                        <li><i class="fas fa-cloud mr-2 text-emerald-500"></i> Built on NLP frameworks (Rasa, Dialogflow)</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Chat Page Section -->
-    <div id="chat" class="page-section flex items-center justify-center min-h-screen py-12">
-        <div class="whatsapp-chat-mockup">
-            <div class="chat-header">
-                <img src="https://placehold.co/40x40/007bff/FFFFFF?text=A" alt="Chatbot Icon">
-                <div class="flex-grow">
-                    <p class="font-bold flex items-center">Arogyam <i class="fas fa-check-circle ml-1 text-emerald-200"></i></p>
-                    <p class="text-xs text-emerald-200">Online</p>
-                </div>
-                <select id="language-toggle" class="bg-transparent border border-emerald-200 text-white rounded-md p-1 text-sm focus:ring-2 focus:ring-emerald-100">
-                    <option class="text-black" value="en">English</option>
-                    <option class="text-black" value="hi">हिन्दी</option>
-                    <option class="text-black" value="gu">ગુજરાતી</option>
-                    <option class="text-black" value="or">ଓଡ଼ିଆ</option>
-                </select>
-            </div>
-            <div id="chat-log" class="chat-log flex flex-col">
-                <div class="message-bubble bot-message">
-                    Welcome! I'm Arogyam, your multilingual health assistant. I can provide verified health information and government advisories.
-                </div>
-                <div class="message-bubble bot-message">
-                    Hello! How can I assist you today?
-                </div>
-            </div>
-            <div class="p-4 bg-slate-50 border-t border-slate-200">
-                <div class="question-buttons">
-                    <button class="question-button" data-question="What are the symptoms of dengue fever?">
-                        What are the symptoms of dengue fever?
-                    </button>
-                    <button class="question-button" data-question="What is the vaccination schedule for children?">
-                        What is the vaccination schedule for children?
-                    </button>
-                    <button class="question-button" data-question="What should I do if I have a persistent cough?">
-                        What should I do if I have a persistent cough?
-                    </button>
-                    <button class="question-button" data-question="Suggest a nearby doctor.">
-                        Suggest a nearby doctor.
-                    </button>
-                </div>
-                <div class="mt-4 flex items-center gap-2">
-                    <input type="text" id="user-input" placeholder="Type your message..." class="flex-grow p-3 rounded-full border border-slate-300 focus:outline-none focus:border-emerald-500 transition-colors">
-                    <button id="voice-button" class="voice-btn"><i class="fas fa-microphone mic-icon"></i></button>
-                </div>
-            </div>
+    <section class="py-12 md:py-20">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-slate-800">About Arogyam Mitra</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="about-card">
+          <div class="icon"><i class="fas fa-language"></i></div>
+          <h3 class="text-xl font-bold mb-2">Multilingual Support</h3>
+          <p class="text-slate-600">
+            Arogyam Mitra speaks your language. Get health information in Hindi, Gujarati, Oriya, and English, with more languages coming soon.
+          </p>
         </div>
-    </div>
-
-    <!-- Dashboard Page Section -->
-    <div id="dashboard" class="page-section container py-12">
-        <h2 class="text-4xl font-bold text-center mb-4 text-slate-800">Health Worker Dashboard</h2>
-        <div class="bg-amber-50 border-l-4 border-amber-500 text-amber-700 p-4 rounded-xl mb-8" role="alert">
-            <div class="flex">
-                <div class="py-1"><svg class="fill-current h-6 w-6 text-amber-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/></svg></div>
-                <div>
-                    <p class="font-bold">Demonstration Data</p>
-                    <p class="text-sm">The data displayed here is for **demonstration purposes only** and is not from a real-world source.</p>
-                    <a href="https://www.who.int" target="_blank" class="text-amber-700 underline font-semibold mt-2 block">Reference: World Health Organization (WHO)</a>
-                </div>
-            </div>
+        <div class="about-card">
+          <div class="icon"><i class="fas fa-hand-holding-medical"></i></div>
+          <h3 class="text-xl font-bold mb-2">Reliable Health Information</h3>
+          <p class="text-slate-600">
+            Our chatbot provides verified information on common diseases, vaccinations, and government health schemes, helping you make informed decisions.
+          </p>
         </div>
-        <div class="dashboard-grid">
-            <div class="dashboard-card">
-                <h3 class="text-xl font-bold mb-4 text-slate-800">User Queries Over Time</h3>
-                <div class="chart-container">
-                    <canvas id="userQueriesChart"></canvas>
-                </div>
-            </div>
-            <div class="dashboard-card">
-                <h3 class="text-xl font-bold mb-4 text-slate-800">Most Common Symptoms</h3>
-                <div class="chart-container">
-                    <canvas id="symptomsChart"></canvas>
-                </div>
-            </div>
-            <div class="dashboard-card">
-                <h3 class="text-xl font-bold mb-4 text-slate-800">Vaccination Schedules</h3>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full bg-white rounded-xl">
-                        <thead class="bg-slate-100">
-                            <tr>
-                                <th class="py-3 px-4 text-left font-semibold text-sm text-slate-600">Vaccine</th>
-                                <th class="py-3 px-4 text-left font-semibold text-sm text-slate-600">Location</th>
-                                <th class="py-3 px-4 text-left font-semibold text-sm text-slate-600">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody id="vaccinationTable">
-                            <!-- Data will be populated by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="dashboard-card">
-                <h3 class="text-xl font-bold mb-4 text-slate-800">Awareness Growth</h3>
-                <div class="chart-container">
-                    <canvas id="awarenessChart"></canvas>
-                </div>
-            </div>
+        <div class="about-card">
+          <div class="icon"><i class="fas fa-users-cog"></i></div>
+          <h3 class="text-xl font-bold mb-2">Empowering Health Workers</h3>
+          <p class="text-slate-600">
+            The integrated dashboard provides ASHA workers with real-time data on local health trends, vaccination drives, and symptom reports to improve community health.
+          </p>
+        </div>
+        <div class="about-card">
+          <div class="icon"><i class="fas fa-hospital-user"></i></div>
+          <h3 class="text-xl font-bold mb-2">Connecting with Care</h3>
+          <p class="text-slate-600">
+            Arogyam Mitra helps you find nearby healthcare facilities and doctors, and connects you to government helplines for mental health and other emergencies.
+          </p>
+        </div>
+        <div class="about-card">
+          <div class="icon"><i class="fas fa-heartbeat"></i></div>
+          <h3 class="text-xl font-bold mb-2">Focus on Rural Health</h3>
+          <p class="text-slate-600">
+            Designed to bridge the urban-rural healthcare gap, our platform provides vital health information and resources to remote and underserved communities.
+          </p>
+        </div>
+        <div class="about-card">
+          <div class="icon"><i class="fas fa-mobile-alt"></i></div>
+          <h3 class="text-xl font-bold mb-2">Accessible on Your Phone</h3>
+          <p class="text-slate-600">
+            Since our platform is built on WhatsApp and SMS, it is accessible on any basic smartphone, without the need for a separate app or internet connection.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="chat" class="page-section">
+    <div class="whatsapp-chat-mockup">
+      <div class="chat-header">
+        <img src="https://i.imgur.com/your-arogyam-mitra-logo.png" alt="Arogyam Mitra Logo" class="h-10 w-10 mr-3">
+        <div class="flex-grow">
+          <p class="font-bold flex items-center">Arogyam Mitra <i class="fas fa-check-circle ml-1 text-emerald-200"></i></p>
+          <p class="text-xs text-emerald-200">Online</p>
+        </div>
+        <select id="language-toggle" class="bg-transparent border border-emerald-200 text-white rounded-md p-1 text-sm focus:ring-2 focus:ring-emerald-100">
+          <option class="text-black" value="en">English</option>
+          <option class="text-black" value="hi">हिन्दी</option>
+          <option class="text-black" value="gu">ગુજરાતી</option>
+          <option class="text-black" value="or">ଓଡ଼ିଆ</option>
+        </select>
+      </div>
+      <div id="chat-log" class="chat-log flex flex-col">
+        <div class="message-bubble bot-message">
+          Welcome! I'm Arogyam Mitra, your multilingual health assistant. I can provide verified health information and government advisories.
+        </div>
+        <div class="message-bubble bot-message">
+          Hello! How can I assist you today?
+        </div>
+      </div>
+      <div class="p-4 bg-slate-50 border-t border-slate-200">
+        <div class="question-buttons">
+          <button class="question-button" data-question="What are the symptoms of dengue fever?">
+            What are the symptoms of dengue fever?
+          </button>
+          <button class="question-button" data-question="What is the vaccination schedule for children?">
+            What is the vaccination schedule for children?
+          </button>
+          <button class="question-button" data-question="What are the emergency contact numbers?">
+            What are the emergency contact numbers?
+          </button>
+          <button class="question-button" data-question="What should I do if I have a persistent cough?">
+            What should I do if I have a persistent cough?
+          </button>
+          <button class="question-button" data-question="What are the first signs of pregnancy and what should I do next?">
+            What are the first signs of pregnancy and what should I do next?
+          </button>
+          <button class="question-button" data-question="How can I get help for depression?">
+            How can I get help for depression?
+          </button>
+          <button class="question-button" data-question="Suggest a nearby doctor.">
+            Suggest a nearby doctor.
+          </button>
+        </div>
+        <div class="mt-4 flex items-center gap-2">
+          <input type="text" id="user-input" placeholder="Type your message..." class="flex-grow p-3 rounded-full border border-slate-300 focus:outline-none focus:border-emerald-500 transition-colors">
+          <button id="voice-button" class="voice-btn"><i class="fas fa-microphone mic-icon"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="dashboard" class="page-section container py-12">
+    <h2 class="text-4xl font-bold text-center mb-4 text-slate-800">Health Worker Dashboard</h2>
+    <p class="text-center text-red-600 mb-8 font-semibold">
+      Disclaimer: The data presented here is for demonstration purposes only and does not reflect real-time information.
+    </p>
+
+    <div class="news-card">
+      <h3 class="text-2xl font-bold mb-4 text-slate-800">Emergency & Health Announcements</h3>
+      <div class="news-grid" id="news-container">
         </div>
     </div>
 
-    <!-- Form Page Section -->
-    <div id="form" class="page-section container flex justify-center py-12">
-        <div class="form-panel">
-            <div class="text-center mb-6">
-                <h2 class="text-3xl font-bold text-slate-800">Register or Report Symptoms</h2>
-                <p class="text-slate-600 mt-2 max-w-sm mx-auto">
-                    Fill out this form to get timely updates on health advisories, vaccination drives, and to privately report symptoms to local health workers.
-                </p>
-            </div>
-            <form id="userForm">
-                <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input type="text" id="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" pattern="[0-9]{10}" required>
-                </div>
-                <div class="form-group">
-                    <label for="symptoms">Reported Symptoms</label>
-                    <textarea id="symptoms" rows="4" placeholder="e.g., Fever, headache, cough..."></textarea>
-                </div>
-                <div class="form-group flex items-center">
-                    <input type="checkbox" id="reminder" class="w-auto mr-2 rounded-md h-5 w-5 text-emerald-600 focus:ring-emerald-500">
-                    <label for="reminder" class="mb-0 text-slate-700">Send me vaccination reminders via SMS.</label>
-                </div>
-                <div id="form-message" class="hidden mt-6 p-4 text-emerald-700 bg-emerald-100 rounded-lg font-medium"></div>
-                <button type="submit" class="w-full bg-emerald-600 text-white py-3 mt-6 rounded-full font-bold shadow-lg hover:bg-emerald-700 transition-colors duration-300">Submit</button>
-            </form>
+    <div class="dashboard-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="dashboard-card news-card">
+        <h3 class="text-xl font-bold mb-4 text-slate-800">User Queries Over Time</h3>
+        <div class="chart-container h-64">
+          <canvas id="userQueriesChart"></canvas>
         </div>
+      </div>
+      <div class="dashboard-card news-card">
+        <h3 class="text-xl font-bold mb-4 text-slate-800">Most Common Symptoms</h3>
+        <div class="chart-container h-64">
+          <canvas id="symptomsChart"></canvas>
+        </div>
+      </div>
+      <div class="dashboard-card news-card">
+        <h3 class="text-xl font-bold mb-4 text-slate-800">Awareness Growth</h3>
+        <div class="chart-container h-64">
+          <canvas id="awarenessChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-card news-card mt-8 overflow-x-auto">
+      <h3 class="text-xl font-bold mb-4 text-slate-800">Vaccination Schedules</h3>
+      <table class="min-w-full bg-white rounded-xl">
+        <thead class="bg-slate-100">
+          <tr>
+            <th class="py-3 px-4 text-left font-semibold text-sm text-slate-600">Vaccine</th>
+            <th class="py-3 px-4 text-left font-semibold text-sm text-slate-600">Location</th>
+            <th class="py-3 px-4 text-left font-semibold text-sm text-slate-600">Date</th>
+          </tr>
+        </thead>
+        <tbody id="vaccinationTable">
+          </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="emergency" class="page-section container py-12">
+    <h2 class="text-4xl font-bold text-center mb-8 text-slate-800">Emergency & SOS Services</h2>
+
+    <div class="emergency-table-container mb-8">
+      <h3 class="text-2xl font-bold mb-4 text-slate-800">Emergency Contact Numbers</h3>
+      <p class="text-slate-600 mb-6">
+        In case of a medical emergency or distress, please call the following numbers immediately.
+      </p>
+      <table class="emergency-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Contact Number</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Emergency Services</td>
+            <td><a href="tel:112">112</a></td>
+            <td>Unified emergency number for Police, Fire, and Ambulance (Pan-India).</td>
+          </tr>
+          <tr>
+            <td>Ambulance</td>
+            <td><a href="tel:108">108</a></td>
+            <td>Free emergency medical services.</td>
+          </tr>
+          <tr>
+            <td>Health Helpline</td>
+            <td><a href="tel:104">104</a></td>
+            <td>Health-related assistance and information.</td>
+          </tr>
+          <tr>
+            <td>Childline</td>
+            <td><a href="tel:1098">1098</a></td>
+            <td>24/7 helpline for children in distress.</td>
+          </tr>
+          <tr>
+            <td>Women's Helpline</td>
+            <td><a href="tel:181">181</a></td>
+            <td>Helpline for women facing domestic violence or other emergencies.</td>
+          </tr>
+          <tr>
+            <td>Mental Health (Tele-MANAS)</td>
+            <td><a href="tel:14416">14416</a></td>
+            <td>24/7 free mental health counseling.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     
-    <!-- Modal for SMS/WhatsApp/Web Chat Connect -->
-    <div id="connect-modal" class="modal-overlay hidden">
-        <div class="modal-content text-center">
-            <button class="modal-close-btn" onclick="hideModal()"><i class="fas fa-times"></i></button>
-            <h2 id="modal-title" class="text-3xl font-bold mb-4"></h2>
-            <p id="modal-description" class="text-slate-600 mb-6">Please provide your details to connect with Arogyam.</p>
-            <form id="connectForm">
-                <div class="form-group">
-                    <label for="connectName" class="sr-only">Full Name</label>
-                    <input type="text" id="connectName" placeholder="Full Name" required>
-                </div>
-                <div class="form-group">
-                    <label for="connectPhone" class="sr-only">Phone Number</label>
-                    <input type="tel" id="connectPhone" pattern="[0-9]{10}" placeholder="Phone Number (e.g., 9876543210)" required>
-                </div>
-                <button type="submit" class="w-full bg-emerald-600 text-white py-3 mt-2 rounded-full font-bold shadow-lg hover:bg-emerald-700 transition-colors duration-300">
-                    Connect
-                </button>
-            </form>
-            <div id="connect-message" class="hidden mt-4 p-4 text-emerald-700 bg-emerald-100 rounded-lg font-medium"></div>
-        </div>
+    <div class="emergency-table-container">
+      <h3 class="text-2xl font-bold mb-4 text-slate-800">Find Nearby Healthcare</h3>
+      <p class="text-slate-600 mb-6">
+        Use the map to locate the nearest hospitals, clinics, and pharmacies.
+      </p>
+      <div class="h-96 w-full rounded-xl overflow-hidden shadow-lg mb-4 bg-slate-100 flex items-center justify-center">
+        <p class="text-slate-500">Google Map Placeholder</p>
+      </div>
+      <a href="https://www.google.com/maps/search/hospitals+near+me" target="_blank" class="w-full bg-emerald-600 text-white py-3 px-6 rounded-full font-bold shadow-lg hover:bg-emerald-700 transition-colors duration-300 inline-flex items-center justify-center">
+        <i class="fas fa-map-marker-alt mr-2"></i> Find on Google Maps
+      </a>
     </div>
+  </div>
 
-    <!-- Footer -->
-    <footer class="bg-slate-800 text-white py-12">
-        <div class="container text-center">
-            <p>&copy; 2024 Arogyam. All rights reserved.</p>
+  <div id="form" class="page-section container py-12">
+    <div class="form-panel">
+      <div class="text-center mb-6">
+        <h2 class="text-3xl font-bold text-slate-800">Register or Report Symptoms</h2>
+        <p class="text-slate-600 mt-2 max-w-sm mx-auto">
+          Fill out this form to get timely updates on health advisories, vaccination drives, and to privately report symptoms to local health workers.
+        </p>
+      </div>
+      <form id="userForm" class="space-y-4">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" class="w-full border p-2 rounded" required>
         </div>
-    </footer>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" pattern="[0-9]{10}" class="w-full border p-2 rounded" required>
+        </div>
+        <div class="form-group">
+          <label for="symptoms">Reported Symptoms</label>
+          <textarea id="symptoms" rows="4" class="w-full border p-2 rounded" placeholder="e.g., Fever, headache, cough..."></textarea>
+        </div>
+        <div class="form-group flex items-center">
+          <input type="checkbox" id="reminder" class="mr-2 h-5 w-5 text-emerald-600 rounded focus:ring-emerald-500">
+          <label for="reminder" class="mb-0 text-slate-700">Send me vaccination reminders via SMS.</label>
+        </div>
+        <div id="form-message" class="hidden mt-4 p-4 text-emerald-700 bg-emerald-100 rounded-lg font-medium"></div>
+        <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-full font-bold shadow-lg hover:bg-emerald-700 transition-colors duration-300">Submit</button>
+      </form>
+    </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const pages = document.querySelectorAll('.page-section');
-        const navButtons = document.querySelectorAll('.nav-bar button');
-        const connectModal = document.getElementById('connect-modal');
-        let chartsInitialized = false;
+  <div id="connect-modal" class="modal-overlay hidden">
+    <div class="modal-content text-center">
+      <button class="modal-close-btn" onclick="hideModal()"><i class="fas fa-times"></i></button>
+      <h2 id="modal-title" class="text-3xl font-bold mb-4"></h2>
+      <p id="modal-description" class="text-slate-600 mb-6">Please provide your details to connect with Arogyam Mitra.</p>
+      <form id="connectForm" class="space-y-4">
+        <input type="text" id="connectName" placeholder="Full Name" class="w-full border p-2 rounded" required>
+        <input type="tel" id="connectPhone" placeholder="Phone Number" pattern="[0-9]{10}" class="w-full border p-2 rounded" required>
+        <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-full font-bold shadow-lg hover:bg-emerald-700 transition-colors duration-300">
+          Connect
+        </button>
+      </form>
+      <div id="connect-message" class="hidden mt-4 p-4 text-emerald-700 bg-emerald-100 rounded-lg font-medium"></div>
+    </div>
+  </div>
 
-        // Function to control which page is visible
-        function showPage(pageId) {
-            pages.forEach(page => page.classList.remove('active'));
-            navButtons.forEach(button => button.classList.remove('active'));
-            
-            document.getElementById(pageId).classList.add('active');
-            document.getElementById('nav-' + pageId).classList.add('active');
+  <footer class="bg-slate-800 text-white py-12">
+    <div class="container text-center">
+      <p>© 2024 Arogyam Mitra. All rights reserved.</p>
+    </div>
+  </footer>
 
-            if (pageId === 'dashboard' && !chartsInitialized) {
-                // Wait for the DOM to update before rendering charts
-                setTimeout(renderDashboardCharts, 0); 
-            }
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // DOM elements
+    const pages = document.querySelectorAll('.page-section');
+    const navButtons = document.querySelectorAll('.nav-bar button');
+    const connectModal = document.getElementById('connect-modal');
+    let chartsInitialized = false;
+
+    function showPage(pageId) {
+      // Hide all sections
+      pages.forEach(page => {
+        page.classList.remove('active');
+      });
+      // Remove active from nav
+      navButtons.forEach(btn => {
+        btn.classList.remove('active');
+      });
+      // Show the requested section
+      const sel = document.getElementById(pageId);
+      if (sel) sel.classList.add('active');
+      const navBtn = document.getElementById('nav-' + pageId);
+      if (navBtn) navBtn.classList.add('active');
+
+      // If going to dashboard, render charts and news
+      if (pageId === 'dashboard') {
+        if (!chartsInitialized) {
+          renderDashboardCharts();
+          chartsInitialized = true;
         }
+        fetchEmergencyNews();
+      }
+    }
 
-        function showModal(type) {
-            const modalTitle = document.getElementById('modal-title');
-            if (type === 'whatsapp') {
-                modalTitle.textContent = 'Connect via WhatsApp';
-            } else if (type === 'sms') {
-                modalTitle.textContent = 'Connect via SMS';
-            }
-            connectModal.classList.remove('hidden');
+    function showModal(type) {
+      const modalTitle = document.getElementById('modal-title');
+      if (type === 'whatsapp') {
+        modalTitle.textContent = 'Connect via WhatsApp';
+      } else if (type === 'sms') {
+        modalTitle.textContent = 'Connect via SMS';
+      } else {
+        modalTitle.textContent = 'Connect';
+      }
+      connectModal.classList.remove('hidden');
+    }
+
+    function hideModal() {
+      connectModal.classList.add('hidden');
+    }
+
+    // Chat logic
+    const chatLog = document.getElementById('chat-log');
+    const questionButtons = document.querySelectorAll('.question-button');
+    const languageToggle = document.getElementById('language-toggle');
+    const voiceButton = document.getElementById('voice-button');
+    const userInput = document.getElementById('user-input');
+
+    const replies = {
+      "What are the symptoms of dengue fever?": {
+        en: "The common symptoms of dengue fever are high fever, severe headache, muscle and joint pain, and a skin rash. It is important to consult a doctor if you experience these symptoms.",
+        hi: "डेंगू बुखार के सामान्य लक्षण हैं तेज बुखार, गंभीर सिरदर्द, मांसपेशियों और जोड़ों में दर्द, और त्वचा पर लाल चकत्ते। यदि आपको ये लक्षण अनुभव हों तो डॉक्टर से परामर्श करना महत्वपूर्ण है।",
+        gu: "ડેન્ગ્યુ તાવના સામાન્ય લક્ષણોમાં તાવ, ગંભીર માથાનો દુખાવો, માંસપેશીઓ અને સાંધાનો દુખાવો, અને ચામડી પર ફોલ્લીઓ છે. જો તમને આ લક્ષણો અનુભવાય તો ડૉક્ટરની સલાહ લેવી જરૂરી છે.",
+        or: "ଡେଙ୍ଗୁ ଜ୍ୱରର ସାଧାରଣ ଲକ୍ଷଣ ହେଉଛି ଉଚ୍ଚ ଜ୍ୱର, ଗୁରୁତର ମୁଣ୍ଡବିନ୍ଧା, ମାଂସପେଶୀ ଏବଂ ଗଣ୍ଠି ଯନ୍ତ୍ରଣା, ଏବଂ ଚର୍ମରେ ଫୁଲା। ଯଦି ଆପଣ ଏହି ଲକ୍ଷଣଗୁଡିକ ଅନୁଭବ କରନ୍ତି, ତେବେ ଡାକ୍ତରଙ୍କ ସହିତ ପରାମର୍ଶ କରିବା ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ।"
+      },
+      "What is the vaccination schedule for children?": {
+        en: "The standard vaccination schedule for children includes shots for Polio, Measles, and Hepatitis B at different stages. Please consult a local health worker for a personalized schedule based on your region's guidelines.",
+        hi: "बच्चों के लिए मानक टीकाकरण अनुसूची में विभिन्न चरणों में पोलियो, खसरा और हेपेटाइटिस बी के टीके शामिल हैं। कृपया अपने क्षेत्र के दिशानिर्देशों के आधार पर व्यक्तिगत अनुसूची के लिए एक स्थानीय स्वास्थ्य कार्यकर्ता से परामर्श करें।",
+        gu: "બાળકો માટે પ્રમાણભૂત રસીકરણ સમયપત્રકમાં વિવિધ તબક્કામાં પોલિયો, ઓરી અને હેપેટાઇટિસ બી માટે રસીઓનો સમાવેશ થાય છે. કૃપા કરીને તમારા પ્રદેશના માર્ગદર્શિકાના આધારે વ્યક્તિગત રસીકરણ સમયપત્રક માટે સ્થાનિક આરોગ્ય કાર્યકરનો સંપર્ક કરો.",
+        or: "ପିଲାମାନଙ୍କ ପାଇଁ ସାଧାରଣ ଟୀକାକରଣ କାର୍ଯ୍ୟକ୍ରମରେ ବିଭିନ୍ନ ପର୍ଯ୍ୟାୟରେ ପୋଲିଓ, ମିଳିମିଳା ଏବଂ ହେପାଟାଇଟିସ୍ ବି ପାଇଁ ଟିକା ସାମିଲ ହୋଇଛି। ଆପଣଙ୍କ ଅଞ୍ଚଳର ନିର୍ଦ୍ଦେଶାବଳୀ ଅନୁଯାୟୀ ବ୍ୟକ୍ତିଗତ କାର୍ଯ୍ୟକ୍ରମ ପାଇଁ ଦୟାକରି ଏକ ସ୍ୱାଧୀନ ସ୍ୱାସ୍ଥ୍ୟ କର୍ମୀଙ୍କ ସହ ପରାମର୍ଶ କରନ୍ତୁ।"
+      },
+      "What should I do if I have a persistent cough?": {
+        en: "A persistent cough can be a symptom of various conditions. It's best to see a doctor for a proper diagnosis. In the meantime, you can try drinking warm water with honey and avoiding dust and pollutants.",
+        hi: "लगातार खांसी विभिन्न स्थितियों का लक्षण हो सकती है। उचित निदान के लिए डॉक्टर से मिलना सबसे अच्छा है। इस बीच, आप शहद के साथ गर्म पानी पीने और धूल और प्रदूषण से बचने की कोशिश कर सकते हैं।",
+        gu: "સતત ઉધરસ વિવિધ પરિસ્થિતિઓનું લક્ષણ હોઈ શકે છે. યોગ્ય diagnosing માટે ડૉક્ટર જેવું છે. આ દરમિયાન, તમે મધ સાથે ગરમ પાણી પી શકાય છે અને ધૂળ/પ્રદૂષકોથી દૂર રહી શકો છો.",
+        or: "ଏକ ଲଗାତାର କାଶ ବିଭିନ୍ନ ରୋଗର ଲକ୍ଷଣ ହୋଇପାରେ। ସଠିକ୍ ରୋଗ ନିର୍ଣ୍ଣୟ ପାଇଁ ଡାକ୍ତରଙ୍କୁ ଦେଖାଇବା ସର୍ବୋତ୍ତମ। ଏହି ସମୟରେ, ଆପଣ ମହୁ ସହିତ ଗରମ ପାଣି ପିଇବା ଏବଂ ଧୂଳି ଓ ପ୍ରଦୂଷଣରୁ ଦୂରେଇ ରହିବାକୁ ଚେଷ୍ଟା କରିପାରିବେ।"
+      },
+      "What are the first signs of pregnancy and what should I do next?": {
+        en: "The first signs of pregnancy can include a missed period, morning sickness, and feeling tired. It's very important to visit a healthcare clinic or ASHA worker for a proper check-up and to begin regular prenatal care.",
+        hi: "गर्भावस्था के पहले लक्षणों में मासिक धर्म का न आना, सुबह की कमजोरी और थकान महसूस होना शामिल हो सकते हैं। सही जांच के लिए और नियमित प्रसवपूर्व देखभाल शुरू करने के लिए स्वास्थ्य क्लिनिक या आशा कार्यकर्ता से मिलना बहुत महत्वपूर्ण है।",
+        gu: "ગર્ભાવસ્થાના પ્રથમ લક્ષણોમાં ચૂકી ગયેલ માસિક, સવારની બીમારી અને થાક અનુભવવો શામેલ હોઈ શકે છે. યોગ્ય તપાસ માટે અને નિયમિત ગર્ભાવસ્થા પૂર્વ સંભાળ શરૂ કરવા માટે આરોગ્ય ક્લિનિક અથવા આશા કાર્યકરની મુલાકાત લેવી ખૂબ જ મહત્વપૂર્ણ છે.",
+        or: "ଗର୍ଭାବସ୍ଥାର ପ୍ରଥମ ଲକ୍ଷଣଗୁଡିକରେ ମାସିକ ସ୍ରାବ ନ ହେବା, ସକାଳେ ଦୁର୍ବଳତା ଏବଂ ଥକା ଲାଗିବା ସାମିଲ ହୋଇପାରେ। ଠିକ୍ ଯାଞ୍ଚ ଏବଂ ନିୟମିତ ପ୍ରସବ ପୂର୍ବ ଯତ୍ନ ଆରମ୍ଭ କରିବା ପାଇଁ ସ୍ୱାସ୍ଥ୍ୟ କେନ୍ଦ୍ର କିମ୍ବା ଆଶା କର୍ମୀଙ୍କୁ ଦେଖାଇବା ଅତ୍ୟନ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ।"
+      },
+      "How can I get help for depression?": {
+        en: "If you're feeling symptoms of depression, please know that you are not alone and help is available. It is crucial to consult a psychiatrist or a mental health professional for a proper diagnosis and treatment plan. You can also reach out to these government-approved helplines for immediate support: <br><br> **National Institute of Mental Health (NIMHANS):** <a href='tel:08046110007'>08046110007</a> <br> **Kiran Helpline:** <a href='tel:18005990019'>1800-599-0019</a> (24x7) <br><br> Remember, seeking professional help is a sign of strength.",
+        hi: "यदि आप डिप्रेशन के लक्षण महसूस कर रहे हैं, तो कृपया जान लें कि आप अकेले नहीं हैं और मदद उपलब्ध है। सही निदान और उपचार योजना के लिए किसी मनोचिकित्सक या मानसिक स्वास्थ्य पेशेवर से परामर्श करना बहुत महत्वपूर्ण है। आप तत्काल सहायता के लिए इन सरकारी अनुमोदित हेल्पलाइन पर भी संपर्क कर सकते हैं:<br><br> **नेशनल इंस्टीट्यूट ऑफ मेंटल हेल्थ (निमहांस):** <a href='tel:08046110007'>08046110007</a> <br> **किरण हेल्पलाइन:** <a href='tel:18005990019'>1800-599-0019</a> (24x7) <br><br> याद रखें, पेशेवर मदद लेना ताकत की निशानी है।",
+        gu: "જો તમે ડિપ્રેશનના લક્ષણો અનુભવી રહ્યા છો, તો કૃપા કરીને જાણો કે તમે એકલા નથી અને મદદ ઉપલબ્ધ છે. યોગ્ય નિદાન અને સારવાર યોજના માટે મનોચિકિત્સક અથવા માનસિક સ્વાસ્થ્ય વ્યાવસાયિકની સલાહ લેવી ખૂબ જ મહત્વપૂર્ણ છે. તમે તાત્કાલિક સહાય માટે આ સરકારી માન્યતા પ્રાપ્ત હેલ્પલાઇનનો પણ સંપર્ક કરી શકો છો:<br><br> **નેશનલ ઇન્સ્ટિટ્યૂટ ઓફ મેન્ટલ હેલ્થ (નિમહાન્સ):** <a href='tel:08046110007'>08046110007</a> <br> **કિરણ હેલ્પલાઇન:** <a href='tel:18005990019'>1800-599-0019</a> (24x7) <br><br> યાદ રાખો, વ્યાવસાયિક મદદ લેવી એ તાકાતની નિશાની છે.",
+        or: "ଯଦି ଆପଣ ଉଦାସୀନତାର ଲକ୍ଷଣ ଅନୁଭବ କରୁଛନ୍ତି, ତେବେ ଦୟାକରି ଜାଣନ୍ତୁ ଯେ ଆପଣ ଏକୁଟିଆ ନୁହଁନ୍ତି ଏବଂ ସାହାଯ୍ୟ ଉପଲବ୍ଧ। ସଠିକ୍ ରୋଗ ନିର୍ଣ୍ଣୟ ଏବଂ ଚିକିତ୍ସା ଯୋଜନା ପାଇଁ ଜଣେ ମନୋବିଜ୍ଞାନୀ କିମ୍ବା ମାନସିକ ସ୍ୱାସ୍ଥ୍ୟ ବୃତ୍ତିଗତଙ୍କ ସହିତ ପରାମର୍ଶ କରିବା ଅତ୍ୟନ୍ତ ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ। ଆପଣ ତୁରନ୍ତ ସମର୍ଥନ ପାଇଁ ଏହି ସରକାରୀ ଅନୁମୋଦିତ ହେଲ୍ପଲାଇନ ସହିତ ଯୋଗାଯୋଗ କରିପାରିବେ:<br><br> **ନ୍ୟାସନାଲ ଇନଷ୍ଟିଚ୍ୟୁଟ୍ ଅଫ୍ ମେଣ୍ଟାଲ୍ ହେଲ୍ଥ (ନିମହାନ୍ସ):** <a href='tel:08046110007'>08046110007</a> <br> **କିରଣ ହେଲ୍ପଲାଇନ୍:** <a href='tel:18005990019'>1800-599-0019</a> (24x7) <br><br> ମନେରଖନ୍ତୁ, ବୃତ୍ତିଗତ ସାହାଯ୍ୟ ଖୋଜିବା ଶକ୍ତିର ଏକ ପ୍ରତୀକ।"
+      },
+      "What are the emergency contact numbers?": {
+        en: "For any emergency, please call these numbers immediately:<br><br>• **Ambulance (108):** For medical emergencies<br>• **Police/General Emergency (112):** All-in-one emergency number<br>• **Childline (1098):** For children in distress<br>• **Women's Helpline (181):** For women in distress<br>• **Health Helpline (104):** For general health assistance",
+        hi: "किसी भी आपातकालीन स्थिति के लिए, कृपया इन नंबरों पर तुरंत कॉल करें:<br><br>• **एम्बुलेंस (108):** चिकित्सा आपातकाल के लिए<br>• **पुलिस/सामान्य आपातकाल (112):** सभी आपातकालीन सेवाओं के लिए<br>• **चाइल्डलाइन (1098):** संकटग्रस्त बच्चों के लिए<br>• **महिला हेल्पलाइन (181):** संकटग्रस्त महिलाओं के लिए<br>• **स्वास्थ्य हेल्पलाइन (104):** सामान्य स्वास्थ्य सहायता के लिए",
+        gu: "કોઈપણ કટોકટી માટે, કૃપા કરીને આ નંબર પર તરત જ કૉલ કરો:<br><br>• **એમ્બ્યુલન્સ (108):** તબીબી કટોકટી માટે<br>• **પોલીસ/સામાન્ય કટોકટી (112):** બધી કટોકટી સેવાઓ માટે<br>• **ચાઈલ્ડલાઈન (1098):** મુશ્કેલીમાં રહેલા બાળકો માટે<br>• **મહિલા હેલ્પલાઈન (181):** મુશ્કેલીમાં રહેલી મહિલાઓ માટે<br>• **આરોગ્ય હેલ્પલાઈન (104):** સામાન્ય આરોગ્ય સહાયતા માટે",
+        or: "କୌଣସି ଜରୁରୀ ପରିସ୍ଥିତି ପାଇଁ, ଦୟାକରି ତୁରନ୍ତ ଏହି ନମ୍ବରଗୁଡିକ ଡାକନ୍ତୁ:<br><br>• **ଆମ୍ବୁଲାନ୍ସ (108):** ଡାକ୍ତରୀ ଜରୁରୀ ପରିସ୍ଥିତି ପାଇଁ<br>• **ପୋଲିସ୍ / ସାଧାରଣ ଜରୁରୀକାଳୀନ (112):** ସମସ୍ତ ଜରୁରୀକାଳୀନ ସେବା ପାଇଁ<br>• **ଚାଇଲ୍ଡଲାଇନ୍ (1098):** ସଙ୍କଟରେ ଥିବା ପିଲାମାନଙ୍କ ପାଇଁ<br>• **ମହିଳା ହେଲ୍ପଲାଇନ୍ (181):** ସଙ୍କଟରେ ଥିବା ମହିଳାମାନଙ୍କ ପାଇଁ<br>• **ସ୍ୱାସ୍ଥ୍ୟ ହେଲ୍ପଲାଇନ୍ (104):** ସାଧାରଣ ସ୍ୱାସ୍ଥ୍ୟ ସହାୟତା ପାଇଁ"
+      },
+      "Suggest a nearby doctor.": {
+        en: "I am a chatbot and cannot provide medical advice or referrals. For a proper diagnosis and treatment, please consult a healthcare professional. You can use the button below to search for doctors near you.",
+        hi: "मैं एक चैटबॉट हूं और चिकित्सा सलाह या रेफरल प्रदान नहीं कर सकता। उचित निदान और उपचार के लिए, कृपया एक स्वास्थ्य सेवा पेशेवर से परामर्श लें। आप अपने आसपास के डॉक्टरों को खोजने के लिए नीचे दिए गए बटन का उपयोग कर सकते हैं।",
+        gu: "હું એક ચેટબોટ છું અને તબીબી સલાહ અથવા રેફરલ્સ આપી શકતો નથી. યોગ્ય નિદાન અને સારવાર માટે, કૃપા કરીને એક આરોગ્ય સંભાળ વ્યવસાયીની સલાહ લો. તમે તમારી નજીકના ડોક્ટરોને શોધવા માટે નીચે આપેલા બટનનો ઉપયોગ કરી શકો છો.",
+        or: "ମୁଁ ଜଣେ ଚାଟ୍‌ବୋଟ୍ ଏବଂ ଡାକ୍ତରୀ ପରାମର୍ଶ କିମ୍ବା ରେଫେରାଲ୍ ପ୍ରଦାନ କରିପାରିବି ନାହିଁ। ସଠିକ୍ ରୋଗ ନିର୍ଣ୍ଣୟ ଏବଂ ଚିକିତ୍ସା ପାଇଁ, ଦୟାକରି ଜଣେ ସ୍ୱାସ୍ଥ୍ୟ ସେବା ବ୍ୟବସାୟୀଙ୍କ ସହିତ ପରାମର୍ଶ କରନ୍ତୁ। ଆପଣ ଆପଣଙ୍କ ନିକଟସ୍ଥ ଡାକ୍ତରମାନଙ୍କୁ ଖୋଜିବା ପାଇଁ ନିମ୍ନରେ ଥିବା ବଟନ୍ ବ୍ୟବହାର କରିପାରିବେ।"
+      }
+    };
+
+    function addMessage(text, sender, isHtml = false) {
+      if (!chatLog) return;
+      const msgClass = sender === 'user' ? 'user-message' : 'bot-message';
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message-bubble ${msgClass}`;
+      if (isHtml) {
+        msgDiv.innerHTML = text;
+      } else {
+        msgDiv.textContent = text;
+      }
+      chatLog.appendChild(msgDiv);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    function handleQuestion(question) {
+      addMessage(question, 'user');
+      const lang = (languageToggle && languageToggle.value) ? languageToggle.value : 'en';
+      const answer = (replies[question] && replies[question][lang]) ? replies[question][lang] : (replies[question] && replies[question].en) || "Sorry, I don't understand.";
+
+      setTimeout(() => {
+        addMessage(answer, 'bot', true);
+
+        if (question === 'Suggest a nearby doctor.') {
+          const linkBtn = document.createElement('a');
+          linkBtn.href = 'https://www.google.com/maps/search/doctors+near+me';
+          linkBtn.target = '_blank';
+          linkBtn.className = 'question-button self-start mt-2';
+          linkBtn.textContent = 'Search on Google Maps';
+          chatLog.appendChild(linkBtn);
         }
+        chatLog.scrollTop = chatLog.scrollHeight;
+      }, 1000);
+    }
 
-        function hideModal() {
-            connectModal.classList.add('hidden');
+    questionButtons.forEach(btn => {
+      btn.addEventListener('click', function(){
+        const q = btn.getAttribute('data-question');
+        if (q) handleQuestion(q);
+      });
+    });
+
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.lang = 'en-IN';
+
+      voiceButton.addEventListener('click', function(){
+        voiceButton.classList.add('is-listening');
+        recognition.start();
+      });
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        if (userInput) userInput.value = transcript;
+        addMessage(transcript, 'user');
+        setTimeout(() => {
+          addMessage("Thank you for your voice message. For now, please use the predefined questions or the text input.", 'bot');
+        }, 1000);
+      };
+      recognition.onend = function(){
+        voiceButton.classList.remove('is-listening');
+      };
+      recognition.onerror = function(e){
+        console.error('Speech recognition error:', e.error);
+        voiceButton.classList.remove('is-listening');
+        addMessage("I'm sorry, I couldn't hear that. Please type your message or try speaking again.", 'bot');
+      };
+    } else {
+      if (voiceButton) voiceButton.style.display = 'none';
+    }
+
+    // Dashboard logic
+    function fetchEmergencyNews() {
+      const newsContainer = document.getElementById('news-container');
+      const newsData = [
+        {
+          title: 'Gujarat Govt Unveils Guidelines to Safeguard Student Well-being',
+          snippet: 'The Gujarat government has issued a comprehensive set of guidelines to safeguard the mental and physical well-being of students in pre-primary and primary schools across the state. This initiative aims to reduce academic pressure...',
+          imageUrl: 'https://images.unsplash.com/photo-1579621970795-87facc2f935d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHNlYXJjaHwxfHxoZWFsdGglMjBhbmQlMjBzY2hvb2xzfGVufDB8fHx8MTcyNzA1MzU4Mnww&ixlib=rb-4.0.3&q=80&w=1080',
+          link: 'https://timesofindia.indiatimes.com/city/ahmedabad/gujarat-govt-unveils-guidelines-to-safeguard-student-well-being/articleshow/124004371.cms'
+        },
+        {
+          title: 'Depression: New Study Links Climate Disasters to Mental Health Risks in India',
+          snippet: 'A recent study by King George’s Medical University reveals a high prevalence of mental health conditions like PTSD and depression following extreme weather events in India. This highlights the urgent need to incorporate mental health services into disaster management plans.',
+          imageUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHxtZW50YWwlMjBoZWFsdGglMjBpbiUyMEluZGlhfGVufDB8fHx8MTcyNzE0NjE4MHww&ixlib=rb-4.0.3&q=80&w=1080',
+          link: 'https://timesofindia.indiatimes.com/city/lucknow/climate-related-disasters-increasing-mental-health-risks-in-india-says-kgmu-study/articleshow/123984459.cms'
+        },
+        {
+          title: 'Rural Healthcare to Get a Major Boost: New Initiative to Strengthen Health Facilities',
+          snippet: 'The new Divisional Commissioner of Lucknow, Vijay Vishwas Pant, has made strengthening rural health infrastructure a top priority. He announced plans to upgrade facilities and improve accessibility for people in remote areas, aiming to bridge the urban-rural healthcare gap.',
+          imageUrl: 'https://images.unsplash.com/photo-1547900898-d14c330f576e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHxydXJhbCUyMGhlYWx0aGNhcmV8ZW58MHx8fHwxNzI3MTQ2MjcwfDA&ixlib=rb-4.0.3&q=80&w=1080',
+          link: 'https://timesofindia.indiatimes.com/city/lucknow/rural-healthcare-to-get-boost-lko-new-dc/articleshow/124020407.cms'
+        },
+        {
+          title: 'Rare Quadruplets Born in Satara, Doctors Highlight High-Risk Pregnancy Challenges',
+          snippet: 'In a rare case, a 27-year-old mother of triplets gave birth to quadruplets in Satara, Maharashtra. The premature birth highlights the risks involved in multiple pregnancies and the crucial role of advanced medical care in such cases.',
+          imageUrl: 'https://images.unsplash.com/photo-1579126359235-51e9b2518e10?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHxwcmVnbmFuY3l8ZW58MHx8fHwxNzI3MTQ2MzMwfDA&ixlib=rb-4.0.3&q=80&w=1080',
+          link: 'https://timesofindia.indiatimes.com/city/kolhapur/mother-of-triplets-delivers-quadruplets-in-sataras-civil-hospital-in-rare-case/articleshow/123908231.cms'
+        },
+        {
+          title: 'Sugar Awareness Drive Puts Healthy Eating on the Menu for Students',
+          snippet: 'A school in Gurgaon has rolled out a comprehensive "Sugar Awareness and Healthy Eating Campaign," in line with CBSE and NCPCR directives. The initiative uses "Sugar Boards" to expose hidden sugars and has revamped its canteen to offer healthier, millet-based options.',
+          imageUrl: 'https://images.unsplash.com/photo-1521401314354-f8510842e448?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHxzdHVkZW50JTIwaGVhbHRofGVufDB8fHx8MTcyNzE0NjQwOHww&ixlib=rb-4.0.3&q=80&w=1080',
+          link: 'https://timesofindia.indiatimes.com/education/campus-talks/sugar-awareness-drive-puts-healthy-eating-on-the-menu-for-students/articleshow/123998318.cms'
+        },
+        {
+          title: 'ASHA Workers: The Backbone of Rural Healthcare in India',
+          snippet: 'This video highlights the critical role of ground-level Accredited Social Health Activists (ASHA) workers as they travel through remote villages, providing essential maternal and child care, distributing medicines, and raising health awareness.',
+          imageUrl: 'https://images.unsplash.com/photo-1547900898-d14c330f576e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHNlYXJjaHwxfHxoZWFsdGhjYXJlJTIwd29ya2VycyUyMGluJTIwcmVyYWwlMjBpbmRpYXxlbnwwfHx8fDE3MjcxNDY3MTB8MA&ixlib=rb-4.0.3&q=80&w=1080',
+          link: 'https://www.youtube.com/watch?v=kYv_zW4d8yY',
+          isYoutube: true
+        },
+        {
+          title: 'Revolutionizing Healthcare: The Impact of AI on Indian Medicine',
+          snippet: 'A new report highlights how data science, AI, and digital health tools are transforming healthcare in India. From AI-enabled telemedicine platforms in rural clinics to using computational tools for traditional medicine, technology is bridging crucial gaps in the healthcare system.',
+          imageUrl: 'https://images.unsplash.com/photo-1533721619665-22d716279934?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHNlYXJjaHwxfHxoZWFsdGhjYXJlJTIwYWklMjBpbmRpYXxlbnwwfHx8fDE3MjcxNDY1NzJ8MA&ixlib=rb-4.0.3&q=80&w=1080',
+          link: 'https://timesofindia.indiatimes.com/city/chennai/revolutionizing-healthcare-the-impact-of-ai-and-data-science-on-indian-medicine-both-conventional-and-ancient/articleshow/123982705.cms'
         }
+      ];
 
-        // --- Chat Widget Logic ---
-        const chatLog = document.getElementById('chat-log');
-        const questionButtons = document.querySelectorAll('.question-button');
-        const languageToggle = document.getElementById('language-toggle');
-        const voiceButton = document.getElementById('voice-button');
-        const userInput = document.getElementById('user-input');
+      newsContainer.innerHTML = ''; // Clear previous content
+      newsData.forEach(item => {
+        const newsTile = document.createElement('div');
+        newsTile.className = `news-tile ${item.isYoutube ? 'video-tile' : ''}`;
+        newsTile.innerHTML = `
+          <img src="${item.imageUrl}" alt="News Image">
+          <div class="news-tile-content">
+            <h4>${item.title}</h4>
+            <p>${item.snippet}</p>
+            <a href="${item.link}" target="_blank">${item.isYoutube ? 'Watch Now' : 'Read Full Article'} <i class="fas fa-external-link-alt"></i></a>
+          </div>
+        `;
+        newsContainer.appendChild(newsTile);
+      });
+    }
 
-        const replies = {
-            "What are the symptoms of dengue fever?": {
-                en: "The common symptoms of dengue fever are high fever, severe headache, muscle and joint pain, and a skin rash. It is important to consult a doctor if you experience these symptoms.",
-                hi: "डेंगू बुखार के सामान्य लक्षण हैं तेज बुखार, गंभीर सिरदर्द, मांसपेशियों और जोड़ों में दर्द, और त्वचा पर लाल चकत्ते। यदि आपको ये लक्षण अनुभव हों तो डॉक्टर से परामर्श करना महत्वपूर्ण है।",
-                gu: "ડેન્ગ્યુ તાવના સામાન્ય લક્ષણોમાં તાવ, ગંભીર માથાનો દુખાવો, માંસપેશીઓ અને સાંધાનો દુખાવો, અને ચામડી પર ફોલ્લીઓ છે. જો તમને આ લક્ષણો અનુભવાય તો ડૉક્ટરની સલાહ લેવી જરૂરી છે.",
-                or: "ଡେଙ୍ଗୁ ଜ୍ୱରର ସାଧାରଣ ଲକ୍ଷଣ ହେଉଛି ଉଚ୍ଚ ଜ୍ୱର, ଗୁରୁତର ମୁଣ୍ଡବିନ୍ଧା, ମାଂସପେଶୀ ଏବଂ ଗଣ୍ଠି ଯନ୍ତ୍ରଣା, ଏବଂ ଚର୍ମରେ ଫୁଲା। ଯଦି ଆପଣ ଏହି ଲକ୍ଷଣଗୁଡିକ ଅନୁଭବ କରନ୍ତି, ତେବେ ଡାକ୍ତରଙ୍କ ସହିତ ପରାମର୍ଶ କରିବା ଗୁରୁତ୍ୱପୂର୍ଣ୍ଣ।"
-            },
-            "What is the vaccination schedule for children?": {
-                en: "The standard vaccination schedule for children includes shots for Polio, Measles, and Hepatitis B at different stages. Please consult a local health worker for a personalized schedule based on your region's guidelines.",
-                hi: "बच्चों के लिए मानक टीकाकरण अनुसूची में विभिन्न चरणों में पोलियो, खसरा और हेपेटाइटिस बी के टीके शामिल हैं। कृपया अपने क्षेत्र के दिशानिर्देशों के आधार पर व्यक्तिगत अनुसूची के लिए एक स्थानीय स्वास्थ्य कार्यकर्ता से परामर्श करें।",
-                gu: "બાળકો માટે પ્રમાણભૂત રસીકરણ સમયપત્રકમાં વિવિધ તબક્કામાં પોલિયો, ઓરી અને હિપેટાઇટિસ બી માટે રસીઓનો સમાવેશ થાય છે. કૃપા કરીને તમારા પ્રદેશના માર્ગદર્શિકાના આધારે વ્યક્તિગત રસીકરણ સમયપત્રક માટે સ્થાનિક આરોગ્ય કાર્યકરનો સંપર્ક કરો.",
-                or: "ପିଲାମାନଙ୍କ ପାଇଁ ସାଧାରଣ ଟୀକାକରଣ କାର୍ଯ୍ୟକ୍ରମରେ ବିଭିନ୍ନ ପର୍ଯ୍ୟାୟରେ ପୋଲିଓ, ମିଳିମିଳା ଏବଂ ହେପାଟାଇଟିସ୍ ବି ପାଇଁ ଟିକା ସାମିଲ ହୋଇଛି। ଆପଣଙ୍କ ଅଞ୍ଚଳର ନିର୍ଦ୍ଦେଶାବଳୀ ଅନୁଯାୟୀ ବ୍ୟକ୍ତିଗତ କାର୍ଯ୍ୟକ୍ରମ ପାଇଁ ଦୟାକରି ଏକ ସ୍ୱାଧୀନ ସ୍ୱାସ୍ଥ୍ୟ କର୍ମୀଙ୍କ ସହ ପରାମର୍ଶ କରନ୍ତୁ।"
-            },
-            "What should I do if I have a persistent cough?": {
-                en: "A persistent cough can be a symptom of various conditions. It's best to see a doctor for a proper diagnosis. In the meantime, you can try drinking warm water with honey and avoiding dust and pollutants.",
-                hi: "लगातार खांसी विभिन्न स्थितियों का लक्षण हो सकती है। उचित निदान के लिए डॉक्टर से मिलना सबसे अच्छा है। इस बीच, आप शहद के साथ गर्म पानी पीने और धूल और प्रदूषण से बचने की कोशिश कर सकते हैं।",
-                gu: "સતત ઉધરસ વિવિધ પરિસ્થિતિઓનું લક્ષણ હોઈ શકે છે. યોગ્ય નિદાન માટે ડૉક્ટરને મળવું શ્રેષ્ઠ છે. આ દરમિયાન, તમે મધ સાથે ગરમ પાણી પીવાનો પ્રયાસ કરી શકો છો અને ધૂળ અને પ્રદૂષકોથી દૂર રહી શકો છો.",
-                or: "ଏକ ଲଗାତାର କାଶ ବିଭିନ୍ନ ରୋଗର ଲକ୍ଷଣ ହୋଇପାରେ। ସଠିକ୍ ରୋଗ ନିର୍ଣ୍ଣୟ ପାଇଁ ଡାକ୍ତରଙ୍କୁ ଦେଖାଇବା ସର୍ବୋତ୍ତମ। ଏହି ସମୟରେ, ଆପଣ ମହୁ ସହିତ ଗରମ ପାଣି ପିଇବା ଏବଂ ଧୂଳି ଓ ପ୍ରଦୂଷଣରୁ ଦୂରେଇ ରହିବାକୁ ଚେଷ୍ଟା କରିପାରିବେ।"
-            },
-            "Suggest a nearby doctor.": {
-                en: "I am a chatbot and cannot provide medical advice or referrals. For a proper diagnosis and treatment, please consult a healthcare professional. You can use the button below to search for doctors near you.",
-                hi: "मैं एक चैटबॉट हूं और चिकित्सा सलाह या रेफरल प्रदान नहीं कर सकता। उचित निदान और उपचार के लिए, कृपया एक स्वास्थ्य सेवा पेशेवर से परामर्श लें। आप अपने आस-पास के डॉक्टरों को खोजने के लिए नीचे दिए गए बटन का उपयोग कर सकते हैं।",
-                gu: "હું એક ચેટબોટ છું અને તબીબી સલાહ અથવા રેફરલ્સ આપી શકતો નથી. યોગ્ય નિદાન અને સારવાર માટે, કૃપા કરીને એક આરોગ્ય સંભાળ વ્યવસાયીની સલાહ લો. તમે તમારી નજીકના ડોક્ટરોને શોધવા માટે નીચે આપેલા બટનનો ઉપયોગ કરી શકો છો.",
-                or: "ମୁଁ ଜଣେ ଚାଟ୍‌ବୋଟ୍ ଏବଂ ଡାକ୍ତରୀ ପରାମର୍ଶ କିମ୍ବା ରେଫେରାଲ୍ ପ୍ରଦାନ କରିପାରିବି ନାହିଁ। ସଠିକ୍ ରୋଗ ନିର୍ଣ୍ଣୟ ଏବଂ ଚିକିତ୍ସା ପାଇଁ, ଦୟାକରି ଜଣେ ସ୍ୱାସ୍ଥ୍ୟ ସେବା ବ୍ୟବସାୟୀଙ୍କ ସହିତ ପରାମର୍ଶ କରନ୍ତୁ। ଆପଣ ଆପଣଙ୍କ ନିକଟସ୍ଥ ଡାକ୍ତରମାନଙ୍କୁ ଖୋଜିବା ପାଇଁ ନିମ୍ନରେ ଥିବା ବଟନ୍ ବ୍ୟବହାର କରିପାରିବେ।"
-            },
-        };
+    function renderDashboardCharts() {
+      // Chart 1: User Queries
+      const ctx1 = document.getElementById('userQueriesChart');
+      new Chart(ctx1.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [{
+            label: 'User Queries',
+            data: [120, 150, 200, 250, 300, 350],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 3,
+            pointBackgroundColor: '#10b981',
+            pointRadius: 5
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, scales: { x:{ grid:{ display:false } }, y:{ beginAtZero:true, grid:{color:'#e2e8f0'} } } }
+      });
 
-        function addMessage(text, sender) {
-            const msgClass = sender === 'user' ? 'user-message' : 'bot-message';
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message-bubble ${msgClass}`;
-            msgDiv.textContent = text;
-            chatLog.appendChild(msgDiv);
-            chatLog.scrollTop = chatLog.scrollHeight;
+      // Chart 2: Most Common Symptoms
+      const ctx2 = document.getElementById('symptomsChart');
+      new Chart(ctx2.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Fever', 'Cough', 'Body Ache', 'Sore Throat', 'Dizziness'],
+          datasets: [{
+            data: [30,25,15,10,5],
+            backgroundColor: ['#ef4444','#3b82f6','#f59e0b','#10b981','#6366f1'],
+            borderColor: 'white',
+            borderWidth:2
+          }]
+        },
+        options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}} }
+      });
+
+      // Chart 3: Awareness Growth
+      const ctx3 = document.getElementById('awarenessChart');
+      new Chart(ctx3.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: ['Q1','Q2','Q3','Q4'],
+          datasets: [{
+            label: 'Awareness Growth (%)',
+            data: [5,12,18,20],
+            backgroundColor: '#059669',
+            borderRadius:8
+          }]
+        },
+        options: {
+          responsive:true,
+          maintainAspectRatio:false,
+          scales:{
+            x:{ grid:{display:false} },
+            y:{ beginAtZero:true, grid:{color:'#e2e8f0'} }
+          }
         }
+      });
 
-        function handleQuestion(question) {
-            addMessage(question, 'user');
-            const lang = languageToggle.value;
-            let answer = replies[question][lang] || replies[question].en; // Fallback to English
-
-            if (question === 'Suggest a nearby doctor.') {
-                setTimeout(() => {
-                    addMessage(answer, 'bot');
-                    const linkBtn = document.createElement('a');
-                    linkBtn.href = 'https://www.google.com/search?q=doctors+near+me';
-                    linkBtn.target = '_blank';
-                    linkBtn.className = 'question-button self-start mt-2';
-                    linkBtn.textContent = 'Search on Google Maps';
-                    chatLog.appendChild(linkBtn);
-                    chatLog.scrollTop = chatLog.scrollHeight;
-                }, 1000);
-            } else {
-                setTimeout(() => {
-                    addMessage(answer, 'bot');
-                }, 1000);
-            }
-        }
-
-        questionButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const question = button.getAttribute('data-question');
-                handleQuestion(question);
-            });
+      // populate vaccination table
+      const vaccinationData = [
+        { vaccine: 'Measles', location: 'Primary Health Centre, Ahmedabad', date: '2025-10-05' },
+        { vaccine: 'Polio', location: 'Civil Hospital, Ahmedabad', date: '2025-10-12' },
+        { vaccine: 'Dengue', location: 'Community Hall, Ahmedabad', date: '2025-10-19' }
+      ];
+      const tableBody = document.getElementById('vaccinationTable');
+      if (tableBody) {
+        tableBody.innerHTML = '';
+        vaccinationData.forEach(row => {
+          const tr = document.createElement('tr');
+          tr.className = 'border-b border-slate-200 last:border-0 hover:bg-slate-50';
+          tr.innerHTML = `<td class="py-3 px-4">${row.vaccine}</td><td class="py-3 px-4">${row.location}</td><td class="py-3 px-4">${row.date}</td>`;
+          tableBody.appendChild(tr);
         });
+      }
+    }
 
-        // Web Speech API for Mic Button
-        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.lang = 'en-IN'; // Set a default language
+    // Form submit
+    document.getElementById('userForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const msg = document.getElementById('form-message');
+      if (msg) {
+        msg.textContent = 'Thank you! Your information has been submitted successfully.';
+        msg.classList.remove('hidden');
+      }
+      this.reset();
+    });
+    document.getElementById('connectForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const msg = document.getElementById('connect-message');
+      if (msg) {
+        msg.textContent = 'Thank you! Your details have been submitted. A connection will be established shortly.';
+        msg.classList.remove('hidden');
+      }
+      this.reset();
+    });
 
-            voiceButton.addEventListener('click', () => {
-                voiceButton.classList.add('is-listening');
-                recognition.start();
-            });
+    // Initial: show home
+    showPage('home');
 
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                userInput.value = transcript;
-                addMessage(transcript, 'user');
-                setTimeout(() => {
-                    addMessage("Thank you for your voice message. For now, please use the predefined questions or the text input.", 'bot');
-                }, 1000);
-            };
-
-            recognition.onend = () => {
-                voiceButton.classList.remove('is-listening');
-            };
-
-            recognition.onerror = (event) => {
-                console.error('Speech recognition error:', event.error);
-                voiceButton.classList.remove('is-listening');
-                addMessage("I'm sorry, I couldn't hear that. Please type your message or try speaking again.", 'bot');
-            };
-        } else {
-            // Hide the voice button if API is not supported
-            voiceButton.style.display = 'none';
-        }
-
-        // --- Dashboard Chart Logic ---
-        function renderDashboardCharts() {
-            if (chartsInitialized) return; // Prevent re-initialization
-
-            const userQueriesCtx = document.getElementById('userQueriesChart').getContext('2d');
-            const symptomsCtx = document.getElementById('symptomsChart').getContext('2d');
-            const awarenessCtx = document.getElementById('awarenessChart').getContext('2d');
-
-            new Chart(userQueriesCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'User Queries',
-                        data: [120, 150, 200, 250, 300, 350],
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointBackgroundColor: '#10b981',
-                        pointRadius: 5
-                    }]
-                },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false } },
-                        y: { beginAtZero: true, grid: { color: '#e2e8f0' } }
-                    }
-                }
-            });
-
-            new Chart(symptomsCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Fever', 'Cough', 'Body Ache', 'Sore Throat', 'Dizziness'],
-                    datasets: [{
-                        label: 'Reported Symptoms',
-                        data: [30, 25, 15, 10, 5],
-                        backgroundColor: ['#ef4444', '#3b82f6', '#f59e0b', '#10b981', '#6366f1'],
-                        borderColor: 'white',
-                        borderWidth: 2
-                    }]
-                },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } }
-                }
-            });
-
-            new Chart(awarenessCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-                    datasets: [{
-                        label: 'Awareness Growth (%)',
-                        data: [5, 12, 18, 20],
-                        backgroundColor: '#059669',
-                        borderRadius: 8,
-                    }]
-                },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    plugins: { legend: { display: false } },
-                    scales: { 
-                        x: { grid: { display: false } },
-                        y: { beginAtZero: true, grid: { color: '#e2e8f0' } } 
-                    } 
-                }
-            });
-
-            const vaccinationData = [
-                { vaccine: 'Measles', location: 'Primary Health Centre A', date: '2025-10-05' },
-                { vaccine: 'Polio', location: 'Community Hall B', date: '2025-10-12' },
-                { vaccine: 'Dengue', location: 'City Hospital C', date: '2025-10-19' },
-            ];
-
-            const vaccinationTableBody = document.getElementById('vaccinationTable');
-            vaccinationTableBody.innerHTML = ''; // Clear existing data to prevent duplicates
-            vaccinationData.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.className = 'border-b border-slate-200 last:border-0 transition-colors hover:bg-slate-50';
-                tr.innerHTML = `<td class="py-3 px-4">${row.vaccine}</td><td class="py-3 px-4">${row.location}</td><td class="py-3 px-4">${row.date}</td>`;
-                vaccinationTableBody.appendChild(tr);
-            });
-            chartsInitialized = true;
-        }
-
-        // --- Form Submission Logic ---
-        document.getElementById('userForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formMessage = document.getElementById('form-message');
-            formMessage.textContent = 'Thank you! Your information has been submitted successfully.';
-            formMessage.classList.remove('hidden');
-            e.target.reset();
-        });
-
-        document.getElementById('connectForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const connectMessage = document.getElementById('connect-message');
-            connectMessage.textContent = 'Thank you! Your details have been submitted. A connection will be established shortly.';
-            connectMessage.classList.remove('hidden');
-            e.target.reset();
-        });
-    </script>
+  </script>
 </body>
 </html>
