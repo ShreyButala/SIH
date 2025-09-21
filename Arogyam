@@ -63,7 +63,7 @@
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
-    /* Chat styles */
+   /* Chat styles */
     .whatsapp-chat-mockup {
       background-color: white;
       border-radius: 1.5rem;
@@ -84,6 +84,13 @@
       border-top-left-radius: 1.5rem;
       border-top-right-radius: 1.5rem;
     }
+    /* Add this for the circular logo */
+    .chat-header img {
+      border-radius: 50%; /* Makes the image circular */
+      object-fit: cover; /* Ensures the image covers the area without distortion */
+      margin-right: 0.75rem; /* Adjust spacing as needed */
+    }
+
     .chat-log {
       flex-grow: 1;
       padding: 1.5rem;
@@ -111,6 +118,7 @@
       margin-right: auto;
       border-top-left-radius: 0.25rem;
     }
+    /* ... rest of your CSS ... */
     .question-button {
       background-color: #d1fae5;
       color: #065f46;
@@ -309,7 +317,7 @@
         Healthcare <span class="text-emerald-200">Simplified</span> with Arogyam Mitra
       </h1>
       <p class="text-lg md:text-xl text-emerald-100 max-w-3xl mx-auto mb-8 font-light">
-        Instant, reliable health information on a platform everyone uses: WhatsApp.
+        Instant, reliable health information on a platform everyone uses: WhatsApp And SMS.
       </p>
       <div class="flex flex-wrap justify-center gap-4">
         <a href="https://wa.me/919999999999?text=Hello%20Arogyam!%20I%20would%20like%20to%20know%20more%20about%20your%20services." target="_blank" class="bg-white text-emerald-600 px-8 py-4 rounded-full font-bold shadow-lg hover:bg-emerald-50 transition-all duration-300">
@@ -376,7 +384,7 @@
   <div id="chat" class="page-section">
     <div class="whatsapp-chat-mockup">
       <div class="chat-header">
-        <img src="https://i.imgur.com/your-arogyam-mitra-logo.png" alt="Arogyam Mitra Logo" class="h-10 w-10 mr-3">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmCPT-PxVUdN1RjjfkeSOqG4qVGMkox2cEwTE8fqcuBxd5wxSu5gvvf2rltMRGWQpPbik&usqp=CAU" alt="Arogyam Mitra Logo" class="h-10 w-10 mr-3">
         <div class="flex-grow">
           <p class="font-bold flex items-center">Arogyam Mitra <i class="fas fa-check-circle ml-1 text-emerald-200"></i></p>
           <p class="text-xs text-emerald-200">Online</p>
@@ -591,7 +599,7 @@
 
   <footer class="bg-slate-800 text-white py-12">
     <div class="container text-center">
-      <p>© 2024 Arogyam Mitra. All rights reserved.</p>
+      <p>© 2025 Arogyam Mitra. All rights reserved.</p>
     </div>
   </footer>
 
@@ -774,44 +782,44 @@
         {
           title: 'Gujarat Govt Unveils Guidelines to Safeguard Student Well-being',
           snippet: 'The Gujarat government has issued a comprehensive set of guidelines to safeguard the mental and physical well-being of students in pre-primary and primary schools across the state. This initiative aims to reduce academic pressure...',
-          imageUrl: 'https://images.unsplash.com/photo-1579621970795-87facc2f935d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHNlYXJjaHwxfHxoZWFsdGglMjBhbmQlMjBzY2hvb2xzfGVufDB8fHx8MTcyNzA1MzU4Mnww&ixlib=rb-4.0.3&q=80&w=1080',
+          imageUrl: 'https://media.licdn.com/dms/image/sync/v2/D5627AQEuxI_0pryDAw/articleshare-shrink_800/articleshare-shrink_800/0/1736517765293?e=2147483647&v=beta&t=7DuKQjeGVJI56IXoUOYSsk6ViIP007T9y-uMrYd3GQ0',
           link: 'https://timesofindia.indiatimes.com/city/ahmedabad/gujarat-govt-unveils-guidelines-to-safeguard-student-well-being/articleshow/124004371.cms'
         },
         {
           title: 'Depression: New Study Links Climate Disasters to Mental Health Risks in India',
           snippet: 'A recent study by King George’s Medical University reveals a high prevalence of mental health conditions like PTSD and depression following extreme weather events in India. This highlights the urgent need to incorporate mental health services into disaster management plans.',
-          imageUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHxtZW50YWwlMjBoZWFsdGglMjBpbiUyMEluZGlhfGVufDB8fHx8MTcyNzE0NjE4MHww&ixlib=rb-4.0.3&q=80&w=1080',
+          imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQdsm_9KCnmFyo73A_DQN7p2hH5MBFLNYs6g&s',
           link: 'https://timesofindia.indiatimes.com/city/lucknow/climate-related-disasters-increasing-mental-health-risks-in-india-says-kgmu-study/articleshow/123984459.cms'
         },
         {
           title: 'Rural Healthcare to Get a Major Boost: New Initiative to Strengthen Health Facilities',
           snippet: 'The new Divisional Commissioner of Lucknow, Vijay Vishwas Pant, has made strengthening rural health infrastructure a top priority. He announced plans to upgrade facilities and improve accessibility for people in remote areas, aiming to bridge the urban-rural healthcare gap.',
-          imageUrl: 'https://images.unsplash.com/photo-1547900898-d14c330f576e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHxydXJhbCUyMGhlYWx0aGNhcmV8ZW58MHx8fHwxNzI3MTQ2MjcwfDA&ixlib=rb-4.0.3&q=80&w=1080',
+          imageUrl: 'https://healthcubed.com/wp-content/uploads/2023/12/WhatsApp-Image-2023-12-13-at-9.57.40-AM.jpeg',
           link: 'https://timesofindia.indiatimes.com/city/lucknow/rural-healthcare-to-get-boost-lko-new-dc/articleshow/124020407.cms'
         },
         {
           title: 'Rare Quadruplets Born in Satara, Doctors Highlight High-Risk Pregnancy Challenges',
           snippet: 'In a rare case, a 27-year-old mother of triplets gave birth to quadruplets in Satara, Maharashtra. The premature birth highlights the risks involved in multiple pregnancies and the crucial role of advanced medical care in such cases.',
-          imageUrl: 'https://images.unsplash.com/photo-1579126359235-51e9b2518e10?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHxwcmVnbmFuY3l8ZW58MHx8fHwxNzI3MTQ2MzMwfDA&ixlib=rb-4.0.3&q=80&w=1080',
+          imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtj5VJl86VI2wO4N_JCVyN0Nzxeo1N0txcckCVPudzQhiDwwDLNSlSbC3_ozkjhG30l7g&usqp=CAU',
           link: 'https://timesofindia.indiatimes.com/city/kolhapur/mother-of-triplets-delivers-quadruplets-in-sataras-civil-hospital-in-rare-case/articleshow/123908231.cms'
         },
         {
           title: 'Sugar Awareness Drive Puts Healthy Eating on the Menu for Students',
           snippet: 'A school in Gurgaon has rolled out a comprehensive "Sugar Awareness and Healthy Eating Campaign," in line with CBSE and NCPCR directives. The initiative uses "Sugar Boards" to expose hidden sugars and has revamped its canteen to offer healthier, millet-based options.',
-          imageUrl: 'https://images.unsplash.com/photo-1521401314354-f8510842e448?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHxzdHVkZW50JTIwaGVhbHRofGVufDB8fHx8MTcyNzE0NjQwOHww&ixlib=rb-4.0.3&q=80&w=1080',
+          imageUrl: 'https://static.toiimg.com/thumb/msid-123998313,width-1280,height-720,resizemode-4/123998313.jpg',
           link: 'https://timesofindia.indiatimes.com/education/campus-talks/sugar-awareness-drive-puts-healthy-eating-on-the-menu-for-students/articleshow/123998318.cms'
         },
         {
           title: 'ASHA Workers: The Backbone of Rural Healthcare in India',
           snippet: 'This video highlights the critical role of ground-level Accredited Social Health Activists (ASHA) workers as they travel through remote villages, providing essential maternal and child care, distributing medicines, and raising health awareness.',
-          imageUrl: 'https://images.unsplash.com/photo-1547900898-d14c330f576e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHNlYXJjaHwxfHxoZWFsdGhjYXJlJTIwd29ya2VycyUyMGluJTIwcmVyYWwlMjBpbmRpYXxlbnwwfHx8fDE3MjcxNDY3MTB8MA&ixlib=rb-4.0.3&q=80&w=1080',
-          link: 'https://www.youtube.com/watch?v=kYv_zW4d8yY',
+          imageUrl: 'https://www.doctutorials.com/wp-content/uploads/2025/07/ASHA.webp',
+          link: 'https://youtu.be/OKVnOFu0gD4?si=Sf6ty8s7lXj1aYY4',
           isYoutube: true
         },
         {
           title: 'Revolutionizing Healthcare: The Impact of AI on Indian Medicine',
           snippet: 'A new report highlights how data science, AI, and digital health tools are transforming healthcare in India. From AI-enabled telemedicine platforms in rural clinics to using computational tools for traditional medicine, technology is bridging crucial gaps in the healthcare system.',
-          imageUrl: 'https://images.unsplash.com/photo-1533721619665-22d716279934?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1Njk4ODl8MHwxfHNlYXJjaHwxfHxoZWFsdGhjYXJlJTIwYWklMjBpbmRpYXxlbnwwfHx8fDE3MjcxNDY1NzJ8MA&ixlib=rb-4.0.3&q=80&w=1080',
+          imageUrl: 'https://media.licdn.com/dms/image/v2/D4D12AQGgoZoZvZaefA/article-cover_image-shrink_720_1280/B4DZg8kVcYHYAI-/0/1753362824731?e=2147483647&v=beta&t=xo7Si4YmrdTeuv5yQLhs3rUPY5-4y65Iaeb3eZOZb6s',
           link: 'https://timesofindia.indiatimes.com/city/chennai/revolutionizing-healthcare-the-impact-of-ai-and-data-science-on-indian-medicine-both-conventional-and-ancient/articleshow/123982705.cms'
         }
       ];
