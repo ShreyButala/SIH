@@ -429,9 +429,10 @@
           </button>
         </div>
         <div class="mt-4 flex items-center gap-2">
-          <input type="text" id="user-input" placeholder="Type your message..." class="flex-grow p-3 rounded-full border border-slate-300 focus:outline-none focus:border-emerald-500 transition-colors">
-          <button id="voice-button" class="voice-btn"><i class="fas fa-microphone mic-icon"></i></button>
-        </div>
+  <button id="voice-button" class="voice-btn"><i class="fas fa-microphone"></i></button>
+  <input type="text" id="user-input" placeholder="Type your message..." class="flex-grow p-3 rounded-full border border-slate-300 focus:outline-none focus:border-emerald-500 transition-colors">
+  <button id="send-button" class="send-btn"><i class="fas fa-paper-plane"></i></button>
+</div>
       </div>
     </div>
   </div>
