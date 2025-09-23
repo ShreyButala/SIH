@@ -143,6 +143,22 @@
       transition: all 0.3s;
     }
 
+    .send-btn {
+  background: #059669;
+  color: white;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.send-btn:hover {
+  background: #047857;
+}
+
     /* Center chat box horizontally */
     #chat.active {
       display: flex;
@@ -432,7 +448,7 @@
   <button id="voice-button" class="voice-btn"><i class="fas fa-microphone"></i></button>
   <input type="text" id="user-input" placeholder="Type your message..." class="flex-grow p-3 rounded-full border border-slate-300 focus:outline-none focus:border-emerald-500 transition-colors">
   <button id="send-button" class="send-btn"><i class="fas fa-paper-plane"></i></button>
-</div>
+        </div>
       </div>
     </div>
   </div>
@@ -659,6 +675,28 @@
     const languageToggle = document.getElementById('language-toggle');
     const voiceButton = document.getElementById('voice-button');
     const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+
+sendButton.addEventListener('click', function() {
+  sendMessage();
+});
+
+userInput.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    sendMessage();
+  }
+});
+
+function sendMessage() {
+  const message = userInput.value.trim();
+  if (message) {
+    addMessage(message, 'user');
+    userInput.value = '';
+    setTimeout(() => {
+      addMessage("I am a simple chatbot and can only answer predefined questions for now. Please click on one of the questions above.", 'bot');
+    }, 1000);
+  }
+}
 
     const replies = {
       "What are the symptoms of dengue fever?": {
